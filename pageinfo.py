@@ -21,8 +21,8 @@ class PageInfo(object):
         self.currentIndex = dom.xpath("//div[@class='NewPages']/ul/li[2]/a/text()")[0]
         self.nextUrl = dom.xpath("//div[@class='NewPages']/ul/li[last()-1]/a/@href")[0]
         imgs = []
-        tags = []
         for eli in dom.xpath("//div[@class='TypeList']/ul/li"):
+            tags = []
             name = eli.xpath("a/div/text()")[0]
             bannerPath = saveFile( eli.xpath("a/img/@src")[0] ,name ,"banner")
             realImgUrl = eli.xpath("a/@href")[0]
