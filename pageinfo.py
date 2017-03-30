@@ -37,7 +37,7 @@ class PageInfo(object):
             saveInfo(oneimg,name)
         self.imgs = imgs
 def saveInfo(oneimg, name):
-    path = name + "/info.txt"
+    path = "pic/"+name + "/info.txt"
     file = open(path, "w+")
     file.write("%s \n" % (oneimg.name.encode("utf8")))
     file.write("%s \n" % (oneimg.bannerPath.encode("utf8")))
@@ -52,18 +52,22 @@ def saveFile(url,name,picName):
     if not os.path.exists(dir):
         os.makedirs(dir)
     path = dir+"/"+picName+".jpg"
+    if os.path.exists(path):
+        return path
     file = open(path, "wb")
     file.write(content)
     file.close()
     return path
 def findAllImg(realImgUrl,name):
     paths = []
-    while "#" != realImgUrl:
+    while "http://www.umei.cc#" != realImgUrl:
         dom = etree.HTML(requests.get(realImgUrl).content)
-        realImgUrl = "http://www.umei.cc"+dom.xpath("//div[@class='NewPages']/ul/li[last()]/a/@href")[0]
         picAlt = dom.xpath("//div[@class='ImageBody']/p/img/@alt")[0]
         picSrc = dom.xpath("//div[@class='ImageBody']/p/img/@src")[0]
         paths.append(saveFile(picSrc,name,picAlt))
+        aaa = dom.xpath("//div[@class='NewPages']/ul/li[last()]/a/@href")[0]
+        print aaa
+        realImgUrl = "http://www.umei.cc"+aaa
     return paths
 
 
