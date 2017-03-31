@@ -47,7 +47,10 @@ def saveInfo(oneimg, name):
         file.write("%s \n" % (path.encode("utf8")))
     file.close()
 def saveFile(url,name,picName):
-    content = requests.get(url).content
+    try:
+        content = requests.get(url).content
+    except requests.exceptions.ConnectionError:
+        return "null"
     dir = "pic/"+name
     if not os.path.exists(dir):
         os.makedirs(dir)
@@ -62,12 +65,15 @@ def findAllImg(realImgUrl,name):
     paths = []
     while "http://www.umei.cc#" != realImgUrl:
         dom = etree.HTML(requests.get(realImgUrl).content)
-        picAlt = dom.xpath("//div[@class='ImageBody']/p/img/@alt")[0]
-        picSrc = dom.xpath("//div[@class='ImageBody']/p/img/@src")[0]
-        paths.append(saveFile(picSrc,name,picAlt))
         aaa = dom.xpath("//div[@class='NewPages']/ul/li[last()]/a/@href")[0]
         print aaa
-        realImgUrl = "http://www.umei.cc"+aaa
+        realImgUrl = "http://www.umei.cc" + aaa
+        try:
+            picAlt = dom.xpath("//div[@class='ImageBody']/p/img/@alt")[0]
+            picSrc = dom.xpath("//div[@class='ImageBody']/p/img/@src")[0]
+            paths.append(saveFile(picSrc,name,picAlt))
+        except IndexError:
+            continue
     return paths
 
 
