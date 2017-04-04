@@ -23,8 +23,7 @@ def is_dig(n):
     return n.isdigit()
 
 def spyPage(url):
-    encode = requests.get(url).encoding
-    content = requests.get(url).content.decode(encode)
+    content = requests.get(url).content
     dom = etree.HTML(content)
     nextPageList = dom.xpath("//div[@class='mess brtb']/center")[0].xpath('string(.)').replace('\n','').replace(' ','').replace('[',' ').replace(']',' ')
     nextPageSp =  nextPageList.split(' ')
@@ -35,7 +34,12 @@ def spyPage(url):
 
 
 def main():
-    url = "http://m.zhujiage.com.cn/index.php?action=article&id=734860"
+    url = "http://m.zhujiage.com.cn"
+    content = requests.get(url).content
+    dom = etree.HTML(content)
+    url =  "http://m.zhujiage.com.cn/index.php?action=article&id=" + dom.xpath("//ul[@class='p_newslist']/li/a/@href")[0].replace('/article/','').replace('.html','')
+    print url
+    # url = "http://m.zhujiage.com.cn/index.php?action=article&id=734860"
     timeName = time.strftime('%Y-%m-%d',time.localtime(time.time()))
     fileName = "pig"+timeName+".txt"
     file = open(fileName, "w")
