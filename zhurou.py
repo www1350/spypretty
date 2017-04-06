@@ -12,9 +12,11 @@ def spyPig(url, fileName,pageNo):
     content  = requests.get(url).content
     dom = etree.HTML(content)
     list = dom.xpath("//div[@class='mess brtb']/div[@class='cpu-feeds-block']/following-sibling::*/following-sibling::*/p")
+    timeName = time.strftime(' %-m月%-d日 ', time.localtime(time.time()))
+    print timeName
     for p in list:
         text = p.xpath("text()")[0].encode("utf8")
-        if "元/公斤" in text:
+        if timeName in text:
             print text
             file.write("%s \n" % (text))
     file.close()
@@ -43,7 +45,7 @@ def main():
     timeName = time.strftime('%Y-%m-%d',time.localtime(time.time()))
     fileName = "pig"+timeName+".txt"
     file = open(fileName, "w")
-    file.write(timeName+"猪肉价格")
+    file.write(timeName+"猪肉价格\n")
     file.close()
     print timeName
     lastPage = spyPage(url)
